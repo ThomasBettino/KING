@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cockpit Flight Companion</title>
-<meta name="description" content="Flight sim companion: Lombardy airport briefing, interactive dark map, aircraft checklists and METAR/TAF.">
+<meta name="description" content="Compagno di volo per simulatore: briefing aeroporti lombardi, mappa scura interattiva, checklist e METAR/TAF.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230b0c0d'/%3E%3Cpath d='M12 3l2 7 8 3v2l-8-1-1 5 3 2v1l-4-1-4 1v-1l3-2-1-5-8 1v-2l8-3z' fill='%233dff8f'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,22 +87,22 @@ html[data-bright="dim"] body{filter:brightness(.6)}
     <svg width="30" height="30" viewBox="0 0 24 24" class="accent" fill="currentColor"><path d="M12 2l2.2 7.2 8 3.1v2.2l-8-1.1-1 5.1 3 2v1.4l-4.2-1-4.2 1v-1.4l3-2-1-5.1-8 1.1v-2.2l8-3.1z"/></svg>
     <div>
       <div class="disp accent text-lg leading-none">COCKPIT FLIGHT COMPANION</div>
-      <div class="text-xs" style="color:var(--mute)">MSFS 2024 · X-Plane · Lombardy &amp; hubs</div>
+      <div class="text-xs" style="color:var(--mute)">MSFS 2024 · X-Plane · Lombardia e hub</div>
     </div>
   </div>
   <div class="flex items-center gap-5 led ml-auto">
     <div class="text-center"><div class="text-[.65rem]" style="color:var(--mute)">UTC / ZULU</div><div id="zulu" class="amber text-2xl">--:--:--</div></div>
-    <div class="text-center"><div class="text-[.65rem]" style="color:var(--mute)">LOCAL</div><div id="loc" class="accent text-2xl">--:--:--</div></div>
+    <div class="text-center"><div class="text-[.65rem]" style="color:var(--mute)">LOCALE</div><div id="loc" class="accent text-2xl">--:--:--</div></div>
   </div>
   <div class="flex items-center gap-2 flex-wrap">
-    <span class="text-[.65rem] disp" style="color:var(--mute)">UI ZOOM</span>
-    <button class="btn" id="zm" title="Smaller">A−</button>
-    <input type="range" id="zr" min="0.8" max="2" step="0.05" value="1" class="w-28" aria-label="UI scale">
-    <button class="btn" id="zp" title="Larger">A+</button>
+    <span class="text-[.65rem] disp" style="color:var(--mute)">ZOOM INTERFACCIA</span>
+    <button class="btn" id="zm" title="Più piccolo">A−</button>
+    <input type="range" id="zr" min="0.8" max="2" step="0.05" value="1" class="w-28" aria-label="Scala interfaccia">
+    <button class="btn" id="zp" title="Più grande">A+</button>
     <span id="zv" class="led text-sm w-12 text-center accent">100%</span>
-    <button class="btn" id="acc" title="Cycle display colour (green / amber / red night)">COLOR</button>
-    <button class="btn" id="dim" title="Dim screen">DIM</button>
-    <button class="btn" id="fs" title="Fullscreen">⛶</button>
+    <button class="btn" id="acc" title="Cambia colore display (verde / ambra / rosso notte)">COLORE</button>
+    <button class="btn" id="dim" title="Abbassa la luminosità">LUMINOSITÀ</button>
+    <button class="btn" id="fs" title="Schermo intero">⛶</button>
   </div>
 </header>
 
@@ -112,8 +112,8 @@ html[data-bright="dim"] body{filter:brightness(.6)}
   <!-- LEFT -->
   <section class="panel flex flex-col overflow-hidden lg:h-[calc(100vh-6.5rem)]">
     <nav class="flex border-b" style="border-color:var(--line)">
-      <div class="tab on" data-l="ck">CHECKLISTS</div>
-      <div class="tab" data-l="ap">AIRPORT QUICK-REF</div>
+      <div class="tab on" data-l="ck">CHECKLIST</div>
+      <div class="tab" data-l="ap">AEROPORTI</div>
     </nav>
 
     <!-- checklist pane -->
@@ -121,12 +121,12 @@ html[data-bright="dim"] body{filter:brightness(.6)}
       <div class="p-3 grid gap-2 border-b" style="border-color:var(--line)">
         <div class="flex gap-2 items-center">
           <select id="acSel" class="flex-1"></select>
-          <button class="btn" id="rsPhase">RESET PHASE</button>
-          <button class="btn" id="rsAll">RESET ALL</button>
+          <button class="btn" id="rsPhase">AZZERA FASE</button>
+          <button class="btn" id="rsAll">AZZERA TUTTO</button>
         </div>
         <div id="acSub" class="text-xs" style="color:var(--mute)"></div>
         <div class="flex items-center gap-3">
-          <span class="disp text-[.65rem]" style="color:var(--mute)">TOTAL</span>
+          <span class="disp text-[.65rem]" style="color:var(--mute)">TOTALE</span>
           <div class="bar flex-1"><i id="barAll" style="width:0"></i></div>
           <span id="pctAll" class="led accent w-12 text-right">0%</span>
         </div>
@@ -139,15 +139,15 @@ html[data-bright="dim"] body{filter:brightness(.6)}
       </div>
       <div id="items" class="flex-1 overflow-y-auto sc min-h-0"></div>
       <div class="p-2 flex justify-between border-t" style="border-color:var(--line)">
-        <button class="btn" id="prevPh">◀ PREV PHASE</button>
-        <button class="btn" id="nextPh">NEXT PHASE ▶</button>
+        <button class="btn" id="prevPh">◀ FASE PRECEDENTE</button>
+        <button class="btn" id="nextPh">FASE SUCCESSIVA ▶</button>
       </div>
     </div>
 
     <!-- airport pane -->
     <div id="L-ap" class="flex-1 flex-col min-h-0 hidden">
       <div class="p-3 grid gap-2 border-b" style="border-color:var(--line)">
-        <input type="text" id="q" placeholder="Search ICAO, name, city, aero club…  ( / )" autocomplete="off">
+        <input type="text" id="q" placeholder="Cerca ICAO, nome, città, aeroclub…  ( / )" autocomplete="off">
         <div class="flex gap-1.5 flex-wrap" id="filters"></div>
       </div>
       <div id="apList" class="overflow-y-auto sc" style="max-height:30%;min-height:7rem"></div>
@@ -160,10 +160,10 @@ html[data-bright="dim"] body{filter:brightness(.6)}
     <div class="panel glow relative overflow-hidden" id="mapWrap" style="flex:1 1 55%;min-height:260px">
       <div id="map" class="absolute inset-0"></div>
       <div class="absolute top-2 left-12 z-[500] flex gap-1.5 flex-wrap">
-        <button class="btn" id="mLomb">LOMBARDY</button>
-        <button class="btn" id="mSel">SELECTED</button>
-        <button class="btn" id="mRing">5NM RING</button>
-        <button class="btn" id="mBig" title="Expand / shrink the map">⤢ SIZE</button>
+        <button class="btn" id="mLomb">LOMBARDIA</button>
+        <button class="btn" id="mSel">SELEZIONATO</button>
+        <button class="btn" id="mRing">ANELLO 5 NM</button>
+        <button class="btn" id="mBig" title="Ingrandisci / riduci la mappa">⤢ DIMENSIONE</button>
       </div>
       <div class="absolute bottom-6 left-2 z-[500] led text-xs px-2 py-1 rounded" style="background:rgba(8,9,10,.8);border:1px solid var(--line)"><span id="cursor" class="accent">—</span></div>
     </div>
@@ -171,9 +171,9 @@ html[data-bright="dim"] body{filter:brightness(.6)}
     <div class="panel flex flex-col min-h-0" id="brief" style="flex:1 1 45%">
       <nav class="flex border-b overflow-x-auto sc" style="border-color:var(--line)">
         <div class="tab on" data-r="wx">METAR / TAF</div>
-        <div class="tab" data-r="ch">CHARTS &amp; LINKS</div>
-        <div class="tab" data-r="tl">DATA TOOLS</div>
-        <div class="tab" data-r="rd">WIND RADAR</div>
+        <div class="tab" data-r="ch">CARTE E LINK</div>
+        <div class="tab" data-r="tl">STRUMENTI DATI</div>
+        <div class="tab" data-r="rd">VENTO / RADAR</div>
       </nav>
       <div class="flex-1 overflow-y-auto sc p-3 min-h-0" id="R">
         <div id="R-wx"></div>
@@ -186,7 +186,7 @@ html[data-bright="dim"] body{filter:brightness(.6)}
 </main>
 
 <footer class="text-center text-xs pb-4 px-4" style="color:var(--mute)">
-  ⚠ FOR FLIGHT SIMULATION ONLY — not for real-world navigation. Frequencies, runway data and procedures are indicative; verify against your simulator's navdata or the official AIP Italia (ENAV).
+  ⚠ SOLO PER SIMULAZIONE DI VOLO — non usare per la navigazione reale. Frequenze, dati delle piste e procedure sono indicativi: verificali con il database del simulatore o con l'AIP Italia ufficiale (ENAV).
 </footer>
 
 <script>
@@ -235,522 +235,522 @@ window.addEventListener('keydown', e=>{
 
 /* ===================== CHECKLIST DATA ===================== */
 const PHASES = [
-  ['pre','PRE-START / COCKPIT PREP'],['start','ENGINE START'],['taxi','TAXI & BEFORE TAKEOFF'],
-  ['tko','TAKEOFF & CLIMB'],['cruise','CRUISE'],['desc','DESCENT & APPROACH'],
-  ['land','LANDING & AFTER LANDING'],['shut','SHUTDOWN & SECURING']
+  ['pre','PRE-AVVIAMENTO / CABINA'],['start','AVVIAMENTO MOTORE'],['taxi','RULLAGGIO E PRIMA DEL DECOLLO'],
+  ['tko','DECOLLO E SALITA'],['cruise','CROCIERA'],['desc','DISCESA E AVVICINAMENTO'],
+  ['land','ATTERRAGGIO E DOPO ATTERRAGGIO'],['shut','SPEGNIMENTO E MESSA IN SICUREZZA']
 ];
 const CL = t => t.trim().split('\n').map(l=>{const [a,b]=l.split('|').map(s=>s.trim());return [a,b||''];});
 
 const AIRCRAFT = {
- ga: { name:'Generic GA VFR Aircraft', sub:'Single-engine piston, fixed gear · adapt to your type',
-  pre:CL(`Documents (ARROW)|ON BOARD
-Weight & balance, performance|CHECKED
-Weather, NOTAMs, flight plan|REVIEWED
-Fuel quantity & quality|CHECKED / DRAINED
-Exterior walk-around|COMPLETE
-Control locks, chocks|REMOVED
-Seats, belts, harnesses|ADJUSTED & SECURED
-Parking brake|SET
-Master switch|ON
-Circuit breakers|CHECKED IN`),
-  start:CL(`Fuel selector|BOTH / FULLEST
-Mixture|RICH
-Prop|HIGH RPM / FULL FORWARD
-Throttle|OPEN ¼ INCH
-Primer / boost pump|AS REQUIRED
-Beacon / strobe|ON
-Propeller area|"CLEAR!"
-Starter|ENGAGE
-Oil pressure|GREEN (≤30 SEC)
-Alternator / generator|ON
-Avionics master|ON
+ ga: { name:'Aereo GA VFR generico', sub:'Monomotore a pistoni, carrello fisso · adatta alla tua versione',
+  pre:CL(`Documenti (ARROW)|A BORDO
+Peso e bilanciamento, prestazioni|CONTROLLATI
+Meteo, NOTAM, piano di volo|VERIFICATI
+Quantità e qualità carburante|CONTROLLATE / DRENATE
+Ispezione esterna|COMPLETATA
+Bloccaggi comandi, tacchi|RIMOSSI
+Sedili e cinture|REGOLATI E ALLACCIATI
+Freno di stazionamento|INSERITO
+Interruttore generale (master)|ON
+Interruttori automatici (breaker)|CONTROLLATI`),
+  start:CL(`Selettore carburante|BOTH / SERBATOIO PIÙ PIENO
+Miscela|RICCA
+Elica|PASSO MINIMO / TUTTA AVANTI
+Manetta|APERTA 1 CM
+Primer / pompa elettrica|SE NECESSARIO
+Beacon / strobo|ON
+Zona elica|"LIBERO!"
+Motorino di avviamento|INSERIRE
+Pressione olio|VERDE (ENTRO 30 SEC)
+Alternatore / generatore|ON
+Avionica master|ON
 Transponder|STBY`),
-  taxi:CL(`Altimeter / QNH|SET
-Heading indicator|ALIGN TO COMPASS
-Flaps|OPERATE, SET
-Taxi light|ON
-Brakes|TEST
-Flight instruments|CHECK
-Run-up (1700 RPM): magnetos|DROP <125 RPM, DIFF <50
-Carb heat / suction / ammeter|CHECK
-Flight controls|FREE & CORRECT
-Trim|TAKEOFF
-Doors & windows|LOCKED
+  taxi:CL(`Altimetro / QNH|REGOLATO
+Girodirezionale|ALLINEARE ALLA BUSSOLA
+Flap|PROVARE, REGOLARE
+Luce di rullaggio|ON
+Freni|PROVA
+Strumenti di volo|CONTROLLO
+Prova motore (1700 giri): magneti|CALO <125 GIRI, DIFF. <50
+Carburatore caldo / depressione / amperometro|CONTROLLO
+Comandi di volo|LIBERI E CORRETTI
+Trim|DECOLLO
+Porte e finestrini|CHIUSI
 Transponder|ALT
-Briefing: abort point & engine failure|DONE`),
-  tko:CL(`Landing & strobe lights|ON
-Throttle|FULL
-Engine instruments|GREEN
-Airspeed|ALIVE
-Rotate|55 KT (type-specific)
-Positive rate|GEAR UP IF RETRACTABLE
-Flaps|UP @ SAFE ALT
-Climb|Vy / Vx AS REQUIRED
-Throttle & mixture|CLIMB SETTING
-Pattern altitude|CLIMB TO 1000 FT AGL`),
-  cruise:CL(`Power|SET CRUISE
-Mixture|LEAN AS PER POH
-Trim|SET
-Fuel selector / quantity|CHECK
-Engine instruments|MONITOR
-Navigation / position report|CHECK
-Transponder|SQUAWK AS ASSIGNED
-Lights|AS REQUIRED`),
-  desc:CL(`ATIS / weather|OBTAIN
-Altimeter|SET QNH
-Mixture|RICH
-Fuel selector|BOTH
-Landing light|ON
-Carb heat|AS REQUIRED
-Seat belts|SECURED
-Approach briefing|COMPLETE
-Pattern joined|45° DOWNWIND`),
-  land:CL(`Downwind: power & flaps|REDUCE / 10°
-Base: flaps|20-30°
-Final: flaps|FULL AS REQUIRED
-Airspeed|1.3 Vso (65 KT)
-Landing|FLARE, MAIN WHEELS FIRST
-After landing: flaps|UP
-Carb heat|OFF
+Briefing: punto di abort e piantata motore|FATTO`),
+  tko:CL(`Luci di atterraggio e strobo|ON
+Manetta|TUTTA AVANTI
+Strumenti motore|VERDI
+Velocità|VIVA
+Rotazione|55 KT (secondo il tipo)
+Rateo positivo|CARRELLO SU (SE RETRATTILE)
+Flap|SU A QUOTA SICURA
+Salita|Vy / Vx SECONDO NECESSITÀ
+Manetta e miscela|IMPOSTAZIONE DI SALITA
+Quota di circuito|SALIRE A 1000 FT AGL`),
+  cruise:CL(`Potenza|IMPOSTARE CROCIERA
+Miscela|IMPOVERIRE (SECONDO POH)
+Trim|REGOLATO
+Selettore / quantità carburante|CONTROLLO
+Strumenti motore|MONITORARE
+Navigazione / posizione|CONTROLLO
+Transponder|SQUAWK ASSEGNATO
+Luci|SECONDO NECESSITÀ`),
+  desc:CL(`ATIS / meteo|OTTENERE
+Altimetro|REGOLARE QNH
+Miscela|RICCA
+Selettore carburante|BOTH
+Luce di atterraggio|ON
+Carburatore caldo|SECONDO NECESSITÀ
+Cinture|ALLACCIATE
+Briefing di avvicinamento|COMPLETATO
+Ingresso in circuito|45° SOTTOVENTO`),
+  land:CL(`Sottovento: potenza e flap|RIDURRE / 10°
+Base: flap|20-30°
+Finale: flap|PIENI SE NECESSARIO
+Velocità|1,3 Vso (65 KT)
+Atterraggio|ARROTONDAMENTO, PRIMA LE RUOTE PRINCIPALI
+Dopo l'atterraggio: flap|SU
+Carburatore caldo|OFF
 Transponder|STBY
-Taxi light|ON, STROBE OFF
-Runway|VACATE`),
-  shut:CL(`Parking brake|SET
-Throttle|IDLE
-Avionics master|OFF
-Mixture|IDLE CUT-OFF
-Magnetos|OFF
-Master switch|OFF
-Lights|OFF
-Control lock / chocks / tie-downs|INSTALL
-Logbook|COMPLETE
-Aircraft|SECURED`)
+Luce di rullaggio|ON, STROBO OFF
+Pista|LIBERARE`),
+  shut:CL(`Freno di stazionamento|INSERITO
+Manetta|MINIMO
+Avionica master|OFF
+Miscela|CUT-OFF (SPEGNIMENTO)
+Magneti|OFF
+Interruttore generale (master)|OFF
+Luci|OFF
+Bloccaggio comandi / tacchi / ancoraggi|INSTALLARE
+Libretto di volo|COMPILATO
+Aeromobile|MESSO IN SICUREZZA`)
  },
 
- c172: { name:'Cessna 172 Skyhawk (G1000 / 172S)', sub:'Lycoming IO-360 · fixed pitch prop · Vr 55 · Vy 74 · Vglide 68',
-  pre:CL(`Pilot's operating handbook & documents|ON BOARD
-Control wheel lock|REMOVE
-Ignition switch|OFF
-Avionics master|OFF
-Master switch|ON
-Fuel quantity indicators|CHECK
-Master switch|OFF
-Fuel selector valve|BOTH
-Fuel sump drains|CHECK
-Preflight walk-around|COMPLETE
-Seats, belts, shoulder harness|ADJUST & LOCK
-Circuit breakers|CHECK IN
-Flaps|CHECK`),
-  start:CL(`Fuel shutoff valve|ON
-Radios, electrical equipment|OFF
-Brakes|TEST & HOLD
-Circuit breakers|CHECK IN
-Mixture|RICH
-Throttle|¼ INCH OPEN
-Master switch|ON
-Beacon light|ON
-Propeller area|"CLEAR"
-Prime (cold engine)|AS REQUIRED
-Ignition switch|START
-Oil pressure|GREEN (<30 SEC)
-Throttle|1000 RPM
-Alternator|CHECK AMPS
-Avionics master|ON
-Flaps|UP`),
-  taxi:CL(`Parking brake|RELEASE
-Taxi light|ON
-Brakes|CHECK
-Flight instruments|CHECK
-Run-up: throttle|1800 RPM
-Magnetos|DROP MAX 150 / DIFF MAX 50
-Suction / ammeter / oil|CHECK
-Throttle|IDLE → 1000 RPM
-Radios & nav|SET
-Flight controls|FREE & CORRECT
-Trim|TAKEOFF
-Flaps|0-10°
-Doors & windows|CLOSED & LOCKED
-Takeoff briefing|DONE
-Landing, strobe lights|ON`),
-  tko:CL(`Wing flaps|0-10°
-Throttle|FULL OPEN
-Mixture|RICH (LEAN ABOVE 3000 FT DENSITY ALT)
-Elevator|LIFT NOSEWHEEL AT 55 KIAS
-Climb speed|Vy 74 KIAS (Vx 60)
-Flaps|RETRACT @ SAFE ALTITUDE
-Throttle|FULL
-Engine gauges|MONITOR
-Landing light|OFF ABOVE 3000 FT AGL (OPTIONAL)`),
-  cruise:CL(`Power|2100-2700 RPM (≤75%)
-Elevator trim|ADJUST
-Mixture|LEAN FOR BEST ECONOMY
-Fuel selector|CHANGE TANK HOURLY
-Engine instruments|CHECK
+ c172: { name:'Cessna 172 Skyhawk (G1000 / 172S)', sub:'Lycoming IO-360 · elica a passo fisso · Vr 55 · Vy 74 · Vplanata 68',
+  pre:CL(`Manuale di volo e documenti|A BORDO
+Bloccaggio volantino|RIMUOVERE
+Interruttore di accensione|OFF
+Avionica master|OFF
+Interruttore generale (master)|ON
+Indicatori quantità carburante|CONTROLLO
+Interruttore generale (master)|OFF
+Rubinetto carburante|BOTH
+Drenaggio serbatoi|CONTROLLO
+Ispezione esterna|COMPLETATA
+Sedili, cinture, bretelle|REGOLARE E BLOCCARE
+Interruttori automatici (breaker)|CONTROLLARE INSERITI
+Flap|CONTROLLO`),
+  start:CL(`Rubinetto carburante|ON
+Radio, impianto elettrico|OFF
+Freni|PROVA E TENERE
+Interruttori automatici (breaker)|INSERITI
+Miscela|RICCA
+Manetta|APERTA 1 CM
+Interruttore generale (master)|ON
+Beacon|ON
+Zona elica|"LIBERO"
+Primer (motore freddo)|SE NECESSARIO
+Interruttore accensione|START
+Pressione olio|VERDE (<30 SEC)
+Manetta|1000 GIRI
+Alternatore|CONTROLLARE AMPERE
+Avionica master|ON
+Flap|SU`),
+  taxi:CL(`Freno di stazionamento|RILASCIARE
+Luce di rullaggio|ON
+Freni|CONTROLLO
+Strumenti di volo|CONTROLLO
+Prova motore: manetta|1800 GIRI
+Magneti|CALO MAX 150 / DIFF. MAX 50
+Depressione / amperometro / olio|CONTROLLO
+Manetta|MINIMO → 1000 GIRI
+Radio e navigazione|IMPOSTARE
+Comandi di volo|LIBERI E CORRETTI
+Trim|DECOLLO
+Flap|0-10°
+Porte e finestrini|CHIUSI E BLOCCATI
+Briefing di decollo|FATTO
+Luci atterraggio e strobo|ON`),
+  tko:CL(`Flap|0-10°
+Manetta|TUTTA AVANTI
+Miscela|RICCA (IMPOVERIRE OLTRE 3000 FT DENSITÀ)
+Equilibratore|ALZARE LA RUOTINA A 55 KIAS
+Velocità di salita|Vy 74 KIAS (Vx 60)
+Flap|RIENTRARE A QUOTA SICURA
+Manetta|PIENA
+Indicatori motore|MONITORARE
+Luce di atterraggio|OFF SOPRA 3000 FT AGL (FACOLTATIVO)`),
+  cruise:CL(`Potenza|2100-2700 GIRI (≤75%)
+Trim equilibratore|REGOLARE
+Miscela|IMPOVERIRE PER ECONOMIA
+Selettore carburante|CAMBIARE SERBATOIO OGNI ORA
+Strumenti motore|CONTROLLO
 Transponder|ALT / SQUAWK
-Position & fuel check|LOG`),
-  desc:CL(`ATIS / AWOS|OBTAIN
-Altimeter|SET
-Mixture|RICH
-Fuel selector|BOTH
-Landing light|ON
-Seat belts|SECURE
-Approach|BRIEF`),
-  land:CL(`Airspeed (Downwind)|90 KIAS
-Wing flaps|10° DOWNWIND / 20-30° BASE
-Airspeed (Final)|65 KIAS (FLAPS 30°: 60)
-Touchdown|MAIN WHEELS FIRST
-Braking|AS REQUIRED
-Flaps|UP (AFTER LANDING)
-Landing / strobe lights|OFF
+Posizione e carburante|ANNOTARE`),
+  desc:CL(`ATIS / AWOS|OTTENERE
+Altimetro|REGOLARE
+Miscela|RICCA
+Selettore carburante|BOTH
+Luce di atterraggio|ON
+Cinture|ALLACCIATE
+Avvicinamento|BRIEFING`),
+  land:CL(`Velocità (sottovento)|90 KIAS
+Flap|10° SOTTOVENTO / 20-30° BASE
+Velocità (finale)|65 KIAS (FLAP 30°: 60)
+Contatto|PRIMA LE RUOTE PRINCIPALI
+Frenata|SECONDO NECESSITÀ
+Flap|SU (DOPO L'ATTERRAGGIO)
+Luci atterraggio / strobo|OFF
 Transponder|STBY
-Taxi light|ON`),
-  shut:CL(`Parking brake|SET
-Throttle|IDLE
-Avionics master|OFF
-Electrical equipment|OFF
-Mixture|IDLE CUT-OFF
-Ignition switch|OFF → KEY OUT
-Master switch|OFF
-Control lock|INSTALL
-Chocks, tie-downs|IN PLACE`)
+Luce di rullaggio|ON`),
+  shut:CL(`Freno di stazionamento|INSERITO
+Manetta|MINIMO
+Avionica master|OFF
+Impianto elettrico|OFF
+Miscela|CUT-OFF
+Interruttore accensione|OFF → CHIAVE FUORI
+Interruttore generale (master)|OFF
+Bloccaggio comandi|INSTALLARE
+Tacchi, ancoraggi|A POSTO`)
  },
 
- da62: { name:'Diamond DA62', sub:'Twin Austro AE330 diesel (FADEC) · Vr 71 · Vy 84 · Vyse 92 · G1000 NXi',
-  pre:CL(`Documents & W&B|ON BOARD
-Exterior inspection|COMPLETE
-Fuel & oil / coolant quantity|CHECK
-Control surfaces|FREE
-Seat adjust, belts|SECURED
-Parking brake|SET
+ da62: { name:'Diamond DA62', sub:'Bimotore diesel Austro AE330 (FADEC) · Vr 71 · Vy 84 · Vyse 92 · G1000 NXi',
+  pre:CL(`Documenti e peso/bilanciamento|A BORDO
+Ispezione esterna|COMPLETATA
+Quantità carburante, olio, liquido refrigerante|CONTROLLO
+Superfici di comando|LIBERE
+Sedili e cinture|REGOLATI E ALLACCIATI
+Freno di stazionamento|INSERITO
 Battery master (bat 1 / bat 2)|ON
-ECU A / ECU B|OFF → CHECK
-Avionics master|OFF
-Flaps|OPERATE
-Trim|CHECK
-Fuel selector (L/R)|ON
-Gear lever|DOWN`),
-  start:CL(`Engine master switch (L)|ON
-ECU TEST|PERFORM — "NO FAILURE"
-Glow indicator|WAIT UNTIL OFF
-Propeller area|CLEAR
-Starter (L)|PRESS
-Oil pressure|UP WITHIN 3 SEC
-Alternator (L)|ON
-Engine master switch (R)|ON
-Starter (R)|PRESS
-Alternator (R)|ON
-Avionics master|ON
-Engine & electrical annunciations|ALL NORMAL
-Fuel pumps|CHECK
-Cabin heat|AS REQUIRED`),
-  taxi:CL(`Parking brake|RELEASE
-Brakes|CHECK
-Flight instruments & G1000|CHECK
-Altimeter|SET QNH
-Power levers 1800 RPM|FUNCTIONAL TEST — ECU A/B
-Power levers|IDLE
-Flaps|T/O
-Pitot heat|AS REQUIRED
-Flight controls|FREE & CORRECT
+ECU A / ECU B|OFF → CONTROLLO
+Avionica master|OFF
+Flap|PROVARE
+Trim|CONTROLLO
+Selettore carburante (sx/dx)|ON
+Leva carrello|GIÙ`),
+  start:CL(`Engine master (sx)|ON
+ECU TEST|ESEGUIRE — "NO FAILURE"
+Spia candelette|ATTENDERE SPEGNIMENTO
+Zona elica|LIBERA
+Avviamento (sx)|PREMERE
+Pressione olio|IN SALITA ENTRO 3 SEC
+Alternatore (sx)|ON
+Engine master (dx)|ON
+Avviamento (dx)|PREMERE
+Alternatore (dx)|ON
+Avionica master|ON
+Segnalazioni motore ed elettriche|TUTTE NORMALI
+Pompe carburante|CONTROLLO
+Riscaldamento cabina|SECONDO NECESSITÀ`),
+  taxi:CL(`Freno di stazionamento|RILASCIARE
+Freni|CONTROLLO
+Strumenti di volo e G1000|CONTROLLO
+Altimetro|REGOLARE QNH
+Manette a 1800 giri|TEST FUNZIONALE — ECU A/B
+Manette|MINIMO
+Flap|T/O
+Riscaldamento pitot|SECONDO NECESSITÀ
+Comandi di volo|LIBERI E CORRETTI
 Trim|T/O
 Transponder|ALT
-Takeoff briefing|DONE`),
-  tko:CL(`Landing light, strobes|ON
-Power levers|MAX POWER
-Engine instruments|CHECK
-Airspeed|ALIVE
-Rotate|71 KIAS
-Gear|UP (POSITIVE RATE)
-Flaps|UP (≥ 80 KIAS)
-Climb|Vy 84 / Vyse 92 KIAS
-Power|CLIMB POWER
-Engine temps|GREEN`),
-  cruise:CL(`Power levers|SET (≈ 70-75% ECO)
-Trim|SET
-Fuel balance (L/R)|CHECK
-Engine instrument|MONITOR
-Autopilot|AS REQUIRED
-Lights|AS REQUIRED
-Alternate / escape fields|REVIEWED`),
-  desc:CL(`ATIS / weather|OBTAIN
-Altimeter|SET
-Pitot heat|AS REQUIRED
-Fuel selector|BOTH ON
-Landing light|ON
-Approach briefing|COMPLETE
-Speed|≤ 150 KIAS (GEAR 188)
-Flaps|APP @ ≤ 170 KIAS`),
-  land:CL(`Gear|DOWN — 3 GREEN
-Flaps|LDG
-Airspeed (final)|Vref 80 KIAS
-Power levers|IDLE (FLARE)
-After landing: flaps|UP
+Briefing di decollo|FATTO`),
+  tko:CL(`Luce di atterraggio, strobo|ON
+Manette|POTENZA MASSIMA
+Strumenti motore|CONTROLLO
+Velocità|VIVA
+Rotazione|71 KIAS
+Carrello|SU (RATEO POSITIVO)
+Flap|SU (≥ 80 KIAS)
+Salita|Vy 84 / Vyse 92 KIAS
+Potenza|POTENZA DI SALITA
+Temperature motore|VERDI`),
+  cruise:CL(`Manette|IMPOSTARE (≈ 70-75% ECO)
+Trim|REGOLATO
+Bilanciamento carburante (sx/dx)|CONTROLLO
+Strumenti motore|MONITORARE
+Autopilota|SECONDO NECESSITÀ
+Luci|SECONDO NECESSITÀ
+Aeroporti alternati|VERIFICATI`),
+  desc:CL(`ATIS / meteo|OTTENERE
+Altimetro|REGOLARE
+Riscaldamento pitot|SECONDO NECESSITÀ
+Selettore carburante|BOTH ON
+Luce di atterraggio|ON
+Briefing di avvicinamento|COMPLETATO
+Velocità|≤ 150 KIAS (CARRELLO 188)
+Flap|APP A ≤ 170 KIAS`),
+  land:CL(`Carrello|GIÙ — 3 VERDI
+Flap|LDG
+Velocità (finale)|Vref 80 KIAS
+Manette|MINIMO (ARROTONDAMENTO)
+Dopo l'atterraggio: flap|SU
 Transponder|STBY
-Strobes, landing light|OFF
-Fuel pumps|OFF`),
-  shut:CL(`Parking brake|SET
-Power levers|IDLE
-Avionics master|OFF
-Engine master (L, R)|OFF
-Alternator (L, R)|OFF
+Strobo, luce di atterraggio|OFF
+Pompe carburante|OFF`),
+  shut:CL(`Freno di stazionamento|INSERITO
+Manette|MINIMO
+Avionica master|OFF
+Engine master (sx, dx)|OFF
+Alternatore (sx, dx)|OFF
 Battery master|OFF
 ECU A / B|OFF
-Pitot cover, chocks|INSTALL`)
+Coperture pitot, tacchi|INSTALLARE`)
  },
 
- a320: { name:'Airbus A320neo', sub:'CFM LEAP-1A / PW1100G · FBW · typical Fenix/FlyByWire/MSFS flow',
-  pre:CL(`Batteries|ON (CHECK VOLTAGE ≥ 25.5 V)
-External power|ON / APU START
+ a320: { name:'Airbus A320neo', sub:'CFM LEAP-1A / PW1100G · fly-by-wire · flusso tipico Fenix/FlyByWire/MSFS',
+  pre:CL(`Batterie|ON (TENSIONE ≥ 25,5 V)
+Alimentazione esterna|ON / AVVIARE APU
 APU master → start|ON → AVAIL
-ADIRS 1, 2, 3|NAV (ALIGN)
-FMGC / MCDU|INIT: FLT PLN, PERF, FUEL & LOAD
-Cockpit preparation (overhead)|FLOWS DONE
-FD, LS, bus tie, NAV displays|CHECK
-Seat belts / no smoking signs|ON
-Exterior lights (nav & logo)|ON
-Pressurization|AUTO — LDG ELEV SET
-Fuel load & ZFW|VERIFY
-Takeoff data (V-speeds, flex, trim)|SET
-Altimeters (QNH)|SET & CROSS-CHECKED`),
+ADIRS 1, 2, 3|NAV (ALLINEAMENTO)
+FMGC / MCDU|INIT: PIANO DI VOLO, PERF, FUEL & LOAD
+Preparazione cockpit (overhead)|FLUSSI COMPLETATI
+FD, LS, bus tie, display NAV|CONTROLLO
+Segnale cinture / no smoking|ON
+Luci esterne (nav e logo)|ON
+Pressurizzazione|AUTO — QUOTA DI ATTERRAGGIO IMPOSTATA
+Carburante e ZFW|VERIFICARE
+Dati di decollo (V-speed, flex, trim)|IMPOSTATI
+Altimetri (QNH)|IMPOSTATI E INCROCIATI`),
   start:CL(`Beacon|ON
-Pushback / start clearance|OBTAIN
-Engine mode selector|IGN/START
+Autorizzazione pushback / avviamento|OTTENERE
+Selettore modo motori|IGN/START
 Engine master 2|ON — N2 > 20%
 Engine master 1|ON
-Engine parameters|VERIFY (N1, EGT, FF, OIL)
-Engine mode selector|NORM
-Ground spoilers|ARM
-Flaps|SET T/O (CONF 1+F / 2)
-Pitch trim|SET
-APU bleed|OFF
-Pushback|COMPLETE — DISCONNECT`),
-  taxi:CL(`Taxi light|ON
-Nose lights|TAXI
-Flight controls|CHECK FULL & FREE
-Brakes|CHECK
-Takeoff briefing|CONFIRM
-FMA / FMGC|VERIFY
-Cabin report|RECEIVED
+Parametri motore|VERIFICARE (N1, EGT, FF, OIL)
+Selettore modo motori|NORM
+Spoiler a terra|ARMARE
+Flap|SET T/O (CONF 1+F / 2)
+Trim di beccheggio|IMPOSTATO
+Prelievo aria APU|OFF
+Pushback|COMPLETATO — SCOLLEGARE`),
+  taxi:CL(`Luce di rullaggio|ON
+Luci del carrello anteriore|TAXI
+Comandi di volo|CONTROLLO COMPLETO E LIBERO
+Freni|CONTROLLO
+Briefing di decollo|CONFERMARE
+FMA / FMGC|VERIFICARE
+Rapporto di cabina|RICEVUTO
 TCAS|TA/RA
-Strobe|AUTO
-Runway turn-off lights|ON
-Takeoff configuration|TEST — NO MEMO
+Strobo|AUTO
+Luci di ingresso pista|ON
+Configurazione di decollo|TEST — NESSUN MEMO
 Transponder|ON
-Takeoff memo|NO BLUE`),
-  tko:CL(`Thrust levers|FLX / TOGA
+Memo di decollo|NESSUN BLU`),
+  tko:CL(`Manette|FLX / TOGA
 Autothrust|SRS / RWY
-V1 / Rotate (VR)|AS CALCULATED
-Pitch|~15° (SRS)
-Positive climb → gear|UP
-Acceleration altitude|ALT
-Flaps|RETRACT ON SCHEDULE (S, F speeds)
-Autopilot|ENGAGE (>100 FT AGL)
-Climb thrust|CLB DETENT
-Landing lights|OFF @ 10000 FT
-Seat belts|OFF`),
-  cruise:CL(`Cruise altitude|ALT CRZ
-Fuel|MONITOR VS FLIGHT PLAN
-Position / step climb|CROSS-CHECK
-Engines & systems|MONITOR
-Descent preparation|ATIS, STAR, ARRIVAL BRIEFING
-MCDU PERF APPR|SET QNH, TEMP, WIND, VAPP
-LDG elevation|VERIFY
-Seat belts|AS REQUIRED`),
-  desc:CL(`Altimeters|SET STD → QNH @ TRANSITION
-Landing lights|ON @ 10000 FT
-Seat belts|ON
-Approach|BRIEF — MINIMA SET
-Autobrake|SET (LO / MED)
-Descent|MANAGED / DES MODE
-Speed|≤ 250 KT BELOW 10000
-Flaps|F1 → F2 ON SCHEDULE
-Gear|DOWN
-Spoilers|ARM
-Flaps|CONF FULL
-Landing memo|NO BLUE`),
-  land:CL(`Autopilot|OFF @ 1000 FT / AUTOLAND
-Reversers|MAX (IF REQUIRED)
-Brakes|AUTOBRAKE / MANUAL
-Spoilers|AUTO DEPLOYED
-After vacating: flaps|RETRACT
-Spoilers|DISARM
-Radar / predictive windshear|OFF
-Strobes & landing lights|OFF
-APU|START
-Taxi light|ON`),
-  shut:CL(`Parking brake|SET
-Engine masters|OFF
+V1 / Rotazione (VR)|COME CALCOLATE
+Beccheggio|~15° (SRS)
+Salita positiva → carrello|SU
+Quota di accelerazione|ALT
+Flap|RIENTRARE SECONDO PROGRAMMA (velocità S, F)
+Autopilota|INSERIRE (>100 FT AGL)
+Spinta di salita|CLB
+Luci di atterraggio|OFF A 10000 FT
+Cinture|OFF`),
+  cruise:CL(`Quota di crociera|ALT CRZ
+Carburante|MONITORARE RISPETTO AL PIANO
+Posizione / salita a gradini|INCROCIARE
+Motori e sistemi|MONITORARE
+Preparazione alla discesa|ATIS, STAR, BRIEFING
+MCDU PERF APPR|IMPOSTARE QNH, TEMP, VENTO, VAPP
+Quota di atterraggio|VERIFICARE
+Cinture|SECONDO NECESSITÀ`),
+  desc:CL(`Altimetri|STD → QNH ALLA TRANSITION
+Luci di atterraggio|ON A 10000 FT
+Cinture|ON
+Avvicinamento|BRIEFING — MINIMI IMPOSTATI
+Autobrake|IMPOSTARE (LO / MED)
+Discesa|MANAGED / MODO DES
+Velocità|≤ 250 KT SOTTO 10000
+Flap|F1 → F2 SECONDO PROGRAMMA
+Carrello|GIÙ
+Spoiler|ARMARE
+Flap|CONF FULL
+Memo di atterraggio|NESSUN BLU`),
+  land:CL(`Autopilota|OFF A 1000 FT / AUTOLAND
+Inversori di spinta|MAX (SE NECESSARIO)
+Freni|AUTOBRAKE / MANUALE
+Spoiler|DISPIEGATI AUTOMATICAMENTE
+Dopo aver lasciato la pista: flap|RIENTRARE
+Spoiler|DISARMARE
+Radar / windshear predittivo|OFF
+Strobo e luci di atterraggio|OFF
+APU|AVVIARE
+Luce di rullaggio|ON`),
+  shut:CL(`Freno di stazionamento|INSERITO
+Engine master|OFF
 Beacon|OFF
-Seat belts|OFF
-Fuel pumps|OFF
-APU|SHUT DOWN WHEN READY
+Cinture|OFF
+Pompe carburante|OFF
+APU|SPEGNERE QUANDO PRONTO
 ADIRS|OFF
-Batteries|OFF
-External lights|OFF
-Securing|COMPLETE`)
+Batterie|OFF
+Luci esterne|OFF
+Messa in sicurezza|COMPLETATA`)
  },
 
- b738: { name:'Boeing 737-800 / MAX', sub:'CFM56-7B / LEAP-1B · QRH-style flows · pmdg / Zibo / iniBuilds',
-  pre:CL(`Battery|ON
-Standby power|AUTO / BAT
-Ground power / APU|ON
-Electrical power up|COMPLETE
-Emergency exit lights|ARMED
-Fuel pumps|ON
-IRS mode selectors|NAV (ALIGN)
-FMC|INIT: ROUTE, PERF, TAKEOFF REF
-Flight instruments, altimeters|SET
-Pressurization panel|SET LANDING ALT
-Recall|CHECK
-Takeoff briefing|COMPLETE
-Seat belt sign|ON`),
+ b738: { name:'Boeing 737-800 / MAX', sub:'CFM56-7B / LEAP-1B · flussi tipo QRH · PMDG / Zibo / iniBuilds',
+  pre:CL(`Batteria|ON
+Alimentazione standby|AUTO / BAT
+Alimentazione a terra / APU|ON
+Accensione impianto elettrico|COMPLETATA
+Luci di emergenza uscite|ARMATE
+Pompe carburante|ON
+Selettori IRS|NAV (ALLINEAMENTO)
+FMC|INIT: ROTTA, PERF, TAKEOFF REF
+Strumenti di volo, altimetri|IMPOSTATI
+Pannello pressurizzazione|IMPOSTARE QUOTA DI ATTERRAGGIO
+Recall|CONTROLLO
+Briefing di decollo|COMPLETATO
+Segnale cinture|ON`),
   start:CL(`Beacon|ON
-Pushback clearance|OBTAIN
-Pack switches|OFF
-Engine start (ENG 2 first)|START
-N2 rotation|VERIFY
-Fuel control lever (≥ 25% N2)|IDLE DETENT
-Engine parameters|CHECK
-Generators|ON
+Autorizzazione al pushback|OTTENERE
+Packs|OFF
+Avviamento motori (prima ENG 2)|START
+Rotazione N2|VERIFICARE
+Leva carburante (≥ 25% N2)|IDLE
+Parametri motore|CONTROLLO
+Generatori|ON
 Packs|AUTO
 APU|OFF
-Anti-ice|AS REQUIRED
-Flaps|SET (5 / 15)
-Stabilizer trim|SET
-Pushback|COMPLETE`),
-  taxi:CL(`Taxi light|ON
-Controls|FREE
-Brakes|CHECK
-Flight controls|CHECKED
+Anti-ghiaccio|SECONDO NECESSITÀ
+Flap|IMPOSTARE (5 / 15)
+Trim stabilizzatore|IMPOSTATO
+Pushback|COMPLETATO`),
+  taxi:CL(`Luce di rullaggio|ON
+Comandi|LIBERI
+Freni|CONTROLLO
+Comandi di volo|CONTROLLATI
 Autobrake|RTO
-Probe heat|ON
+Riscaldamento sonde|ON
 Transponder|TA/RA
-Takeoff speeds|V1, VR, V2 SET
-Recall|CHECKED
-Runway entry lights|ON
-Before takeoff checklist|COMPLETE`),
-  tko:CL(`Thrust|TOGA / N1
+Velocità di decollo|V1, VR, V2 IMPOSTATE
+Recall|CONTROLLATO
+Luci di ingresso pista|ON
+Checklist prima del decollo|COMPLETATA`),
+  tko:CL(`Spinta|TOGA / N1
 Autothrottle|ARM → N1
-V1 / VR / V2|CALL OUTS
-Gear|UP (POSITIVE RATE)
-Flaps|SCHEDULE
-LNAV / VNAV|ENGAGE
-Autopilot|CMD (> 400 FT)
-Climb thrust|CLB
-Landing lights|OFF @ 10000 FT
-Engine start switches|AS REQUIRED`),
-  cruise:CL(`Cruise altitude|LEVEL
-Cruise thrust|CRZ
-Fuel balance|CHECK
-Position / progress|CHECK
-Systems|MONITOR
-Descent briefing|COMPLETE
-Landing data|SET
-Recall|CHECKED`),
-  desc:CL(`Altimeters|SET @ TA
-Landing lights|ON @ 10000 FT
-Seat belt sign|ON
-Autobrake|SET
-Speed brake|ARM @ FINAL
-Gear|DOWN
-Flaps|SET (30 / 40)
-Landing checklist|COMPLETE
-Anti-ice|AS REQUIRED
-Minimums|SET`),
-  land:CL(`Autopilot / autothrottle|DISCONNECT
-Reversers|DEPLOY
-Speed brake|UP (AUTO)
-After landing: flaps|UP
-Speed brake|DISARM
-Probe heat|OFF
-Radar / strobe|OFF
+V1 / VR / V2|CALLOUT
+Carrello|SU (RATEO POSITIVO)
+Flap|SECONDO PROGRAMMA
+LNAV / VNAV|INSERIRE
+Autopilota|CMD (> 400 FT)
+Spinta di salita|CLB
+Luci di atterraggio|OFF A 10000 FT
+Interruttori avviamento motori|SECONDO NECESSITÀ`),
+  cruise:CL(`Quota di crociera|LIVELLATI
+Spinta di crociera|CRZ
+Bilanciamento carburante|CONTROLLO
+Posizione / avanzamento|CONTROLLO
+Sistemi|MONITORARE
+Briefing di discesa|COMPLETATO
+Dati di atterraggio|IMPOSTATI
+Recall|CONTROLLATO`),
+  desc:CL(`Altimetri|IMPOSTARE ALLA TA
+Luci di atterraggio|ON A 10000 FT
+Segnale cinture|ON
+Autobrake|IMPOSTARE
+Aerofreni|ARMARE IN FINALE
+Carrello|GIÙ
+Flap|IMPOSTARE (30 / 40)
+Checklist di atterraggio|COMPLETATA
+Anti-ghiaccio|SECONDO NECESSITÀ
+Minimi|IMPOSTATI`),
+  land:CL(`Autopilota / autothrottle|DISINSERIRE
+Inversori di spinta|DISPIEGARE
+Aerofreni|SU (AUTO)
+Dopo l'atterraggio: flap|SU
+Aerofreni|DISARMARE
+Riscaldamento sonde|OFF
+Radar / strobo|OFF
 Packs|AUTO
-APU|START
+APU|AVVIARE
 Autobrake|OFF`),
-  shut:CL(`Parking brake|SET
-Engine start levers|CUTOFF
+  shut:CL(`Freno di stazionamento|INSERITO
+Leve avviamento motori|CUTOFF
 Beacon|OFF
-Fasten belts|OFF
-Fuel pumps|OFF
-APU / ground power|AS REQUIRED
-Batteries|OFF
-Exterior lights|OFF
-Securing|COMPLETE`)
+Segnale cinture|OFF
+Pompe carburante|OFF
+APU / alimentazione a terra|SECONDO NECESSITÀ
+Batterie|OFF
+Luci esterne|OFF
+Messa in sicurezza|COMPLETATA`)
  }
 };
 
 /* ===================== AIRPORT DATA ===================== */
 // Frequencies are INDICATIVE — click a frequency to override it with your sim's navdata (stored locally).
 const AIRPORTS = [
- {icao:'LIML',name:'Milano Linate',city:'Milan',kind:'hub',reg:'LOM',lat:45.4451,lon:9.2767,elev:353,
-  rwy:[{id:'18/36',len:2442,wid:60,sfc:'ASPH',note:'ILS 36 CAT III, ILS 18'}],
+ {icao:'LIML',name:'Milano Linate',city:'Milano',kind:'hub',reg:'LOM',lat:45.4451,lon:9.2767,elev:353,
+  rwy:[{id:'18/36',len:2442,wid:60,sfc:'ASF',note:'ILS 36 CAT III, ILS 18'}],
   fr:{ATIS:'127.150',TWR:'118.100',GND:'121.800',APP:'120.200',DEL:'121.675'},
-  circ:'IFR only (no general VFR). Traffic pattern 1500 ft AGL; VFR via VRPs only on ATC clearance.',
-  info:'City airport 7 km E of Milan centre. Slot-controlled; closed to general aviation. Noise-sensitive departures; short single runway — plan for the glide and reduced RWY length at 36 arrivals.'},
+  circ:'Solo IFR (niente aviazione generale VFR). Circuito a 1500 ft AGL; VFR solo tramite VRP e con autorizzazione ATC.',
+  info:'Aeroporto cittadino a 7 km a est del centro di Milano. Voli a slot, chiuso all\'aviazione generale. Partenze con restrizioni antirumore; pista unica e relativamente corta: pianifica bene la planata.'},
  {icao:'LIMC',name:'Milano Malpensa',city:'Ferno / Somma Lombardo',kind:'hub',reg:'LOM',lat:45.6306,lon:8.7281,elev:768,
-  rwy:[{id:'17L/35R',len:3920,wid:60,sfc:'ASPH',note:'ILS CAT III'},{id:'17R/35L',len:3920,wid:60,sfc:'ASPH',note:'ILS CAT III'}],
+  rwy:[{id:'17L/35R',len:3920,wid:60,sfc:'ASF',note:'ILS CAT III'},{id:'17R/35L',len:3920,wid:60,sfc:'ASF',note:'ILS CAT III'}],
   fr:{ATIS:'127.375',TWR:'118.700',GND:'121.800',APP:'119.450',DEL:'121.900'},
-  circ:'IFR. Circuit 1500 ft AGL; VFR arrivals via Ticino VRPs (Sierra, Echo) with clearance.',
-  info:'Main intercontinental hub (T1/T2, MXP Cargo City). Class C CTR with strong cargo/airline traffic. Parallel runways, 1.8 km apart.'},
+  circ:'IFR. Circuito a 1500 ft AGL; arrivi VFR tramite i VRP del Ticino (Sierra, Echo) con autorizzazione.',
+  info:'Principale hub intercontinentale (T1/T2, Cargo City). CTR di classe C con molto traffico cargo e di linea. Piste parallele, a circa 1,8 km l\'una dall\'altra.'},
  {icao:'LIME',name:'Bergamo Orio al Serio',city:'Bergamo',kind:'hub',reg:'LOM',lat:45.6739,lon:9.7042,elev:782,
-  rwy:[{id:'11/29',len:2982,wid:45,sfc:'ASPH',note:'ILS 28/29 CAT I, RWY 11 non-precision'}],
+  rwy:[{id:'11/29',len:2982,wid:45,sfc:'ASF',note:'ILS 28/29 CAT I, pista 11 non di precisione'}],
   fr:{ATIS:'120.550',TWR:'118.300',GND:'121.700',APP:'120.275',DEL:'121.900'},
-  circ:'IFR. Circuit 1500 ft AGL. Mountain terrain to N (Prealps up to 2000 m). Noise-abatement departure 29.',
-  info:'Low-cost hub (Ryanair base). Single runway, high-elevation terrain nearby. Great Lombardy IFR training destination.'},
+  circ:'IFR. Circuito a 1500 ft AGL. Rilievi a nord (Prealpi fino a 2000 m). Partenza antirumore sulla 29.',
+  info:'Hub low-cost (base Ryanair). Pista unica e terreno elevato nelle vicinanze. Ottima destinazione per l\'addestramento IFR in Lombardia.'},
  {icao:'LIMB',name:'Milano Bresso (Aeroclub Milano)',city:'Bresso (MI)',kind:'aeroclub',reg:'LOM',lat:45.5431,lon:9.2033,elev:453,
-  rwy:[{id:'03/21',len:750,wid:20,sfc:'ASPH',note:'Short strip, built-up area'}],
+  rwy:[{id:'03/21',len:750,wid:20,sfc:'ASF',note:'Pista corta, zona urbana'}],
   fr:{INFO:'130.050'},
-  circ:'VFR. Pattern 1000 ft AGL (QNH). Left-hand circuits; strict noise abatement over city; avoid overflight of Milan Nord.',
-  info:'Aero Club Milano base inside the city outskirts. Short runway — obstacle clearance close to housing. Linate CTR very close: remain below limits.'},
+  circ:'VFR. Circuito a 1000 ft AGL (QNH), mano sinistra. Rigorose norme antirumore sulla città: evita di sorvolare Milano nord.',
+  info:'Base dell\'Aero Club Milano alla periferia della città. Pista corta con case vicine: attenzione agli ostacoli. La CTR di Linate è molto vicina: rispetta i limiti.'},
  {icao:'LIPO',name:'Brescia Montichiari',city:'Montichiari (BS)',kind:'hub',reg:'LOM',lat:45.4289,lon:10.3306,elev:325,
-  rwy:[{id:'18/36',len:2990,wid:45,sfc:'ASPH',note:'ILS 18/36'}],
+  rwy:[{id:'18/36',len:2990,wid:45,sfc:'ASF',note:'ILS 18/36'}],
   fr:{ATIS:'127.150',TWR:'118.400',GND:'121.800',APP:'125.500'},
-  circ:'Pattern 1500 ft AGL; VFR GA welcome with clearance. Cargo & mail base (DHL).',
-  info:'Gabriele D\'Annunzio Airport — mainly cargo + GA. Quiet, long runway: good ILS practice.'},
+  circ:'Circuito a 1500 ft AGL; aviazione generale VFR accettata con autorizzazione. Base cargo e postale (DHL).',
+  info:'Aeroporto Gabriele D\'Annunzio, soprattutto cargo e aviazione generale. Tranquillo e con pista lunga: ottimo per l\'ILS.'},
  {icao:'LIPX',name:'Verona Villafranca',city:'Verona',kind:'hub',reg:'NE',lat:45.3957,lon:10.8885,elev:239,
-  rwy:[{id:'04/22',len:3068,wid:45,sfc:'ASPH',note:'ILS 04 / 22'}],
+  rwy:[{id:'04/22',len:3068,wid:45,sfc:'ASF',note:'ILS 04 / 22'}],
   fr:{ATIS:'121.425',TWR:'118.100',GND:'121.700',APP:'118.950'},
-  circ:'Circuit 1500 ft AGL; VFR to/from Lake Garda via VRPs (Garda Lake N-S).',
-  info:'Valerio Catullo Airport, close to Lake Garda. Seasonal charter peak. Popular VFR scenery flights.'},
+  circ:'Circuito a 1500 ft AGL; VFR da/per il Lago di Garda tramite VRP.',
+  info:'Aeroporto Valerio Catullo, vicino al Lago di Garda. Picco di voli charter stagionali. Meta molto amata per i voli panoramici VFR.'},
  {icao:'LILN',name:'Varese Venegono (Aeroclub Varese)',city:'Venegono Superiore (VA)',kind:'aeroclub',reg:'LOM',lat:45.7425,lon:8.8886,elev:1055,
-  rwy:[{id:'06/24',len:700,wid:25,sfc:'ASPH',note:'Gliding / light a/c'}],
+  rwy:[{id:'06/24',len:700,wid:25,sfc:'ASF',note:'Alianti / aerei leggeri'}],
   fr:{INFO:'122.800'},
-  circ:'Pattern 1000 ft AGL (≈ 2050 ft AMSL). Left-hand. Expect glider traffic.',
-  info:'Leonardo da Vinci Aeroclub / Aermacchi heritage field. Hills & lakes: Lake Varese & Lake Maggiore nearby.'},
+  circ:'Circuito a 1000 ft AGL (≈ 2050 ft AMSL), mano sinistra. Attenzione al traffico di alianti.',
+  info:'Campo dell\'Aeroclub Varese, legato alla storia dell\'Aermacchi. Colline e laghi: vicini il Lago di Varese e il Lago Maggiore.'},
  {icao:'LILY',name:'Como Idroscalo (Aeroclub Como)',city:'Como',kind:'aeroclub',reg:'LOM',lat:45.8189,lon:9.0689,elev:650,
-  rwy:[{id:'Water',len:1300,wid:150,sfc:'WATER',note:'Seaplane base on Lake Como'}],
+  rwy:[{id:'Acqua',len:1300,wid:150,sfc:'ACQUA',note:'Base idrovolanti sul Lago di Como'}],
   fr:{INFO:'123.500'},
-  circ:'Seaplane operations — circuit 800 ft AGL (QNH), mountains on both sides, obey CTR limits.',
-  info:'Historic Aero Club Como seaplane base. Spectacular lake & alpine scenery. Remain clear of Lake Lugano CTR.'},
+  circ:'Operazioni di idrovolanti: circuito a 800 ft AGL (QNH), montagne su entrambi i lati, rispettare i limiti della CTR.',
+  info:'Storica base idrovolanti dell\'Aero Club Como. Panorama spettacolare tra lago e Alpi. Resta fuori dalla CTR di Lugano.'},
  {icao:'—',name:'Valbrembo (Aviosuperficie)',city:'Valbrembo (BG)',kind:'aeroclub',reg:'LOM',lat:45.7006,lon:9.5900,elev:795,
-  rwy:[{id:'09/27',len:600,wid:20,sfc:'GRASS',note:'Ultralight / VDS field — approximate'}],
+  rwy:[{id:'09/27',len:600,wid:20,sfc:'ERBA',note:'Ultraleggeri / VDS — dato approssimativo'}],
   fr:{INFO:'123.450'},
-  circ:'Private field — PPR. Keep clear of Bergamo CTR (LIME). Pattern ≈ 800 ft AGL; no ATC.',
-  info:'Small aviosuperficie north-west of Bergamo. Data approximate: private strip near Bergamo / Orio al Serio TMA. Prior permission required.'},
- {icao:'LIPZ',name:'Venezia Marco Polo',city:'Venice',kind:'hub',reg:'IT',lat:45.5053,lon:12.3519,elev:7,
-  rwy:[{id:'04R/22L',len:3300,wid:45,sfc:'ASPH',note:'ILS CAT II'},{id:'04L/22R',len:3000,wid:45,sfc:'ASPH',note:'Parallel'}],
+  circ:'Campo privato, serve autorizzazione preventiva (PPR). Resta fuori dalla CTR di Bergamo (LIME). Circuito a circa 800 ft AGL; nessun ATC.',
+  info:'Piccola aviosuperficie a nord-ovest di Bergamo. Dati approssimativi: pista privata vicino alla TMA di Bergamo/Orio al Serio. Serve autorizzazione preventiva.'},
+ {icao:'LIPZ',name:'Venezia Marco Polo',city:'Venezia',kind:'hub',reg:'IT',lat:45.5053,lon:12.3519,elev:7,
+  rwy:[{id:'04R/22L',len:3300,wid:45,sfc:'ASF',note:'ILS CAT II'},{id:'04L/22R',len:3000,wid:45,sfc:'ASF',note:'Parallela'}],
   fr:{ATIS:'121.605',TWR:'118.400',GND:'121.700',APP:'126.050'},
-  circ:'IFR. Circuit 1500 ft AGL.',info:'Lagoon airport, great scenery on arrival.'},
- {icao:'LIMF',name:'Torino Caselle',city:'Turin',kind:'hub',reg:'IT',lat:45.2008,lon:7.6497,elev:989,
-  rwy:[{id:'18/36',len:3300,wid:60,sfc:'ASPH',note:'ILS CAT III'}],
+  circ:'IFR. Circuito a 1500 ft AGL.\',info:\'Aeroporto sulla laguna, panorama bellissimo in arrivo.'},
+ {icao:'LIMF',name:'Torino Caselle',city:'Torino',kind:'hub',reg:'IT',lat:45.2008,lon:7.6497,elev:989,
+  rwy:[{id:'18/36',len:3300,wid:60,sfc:'ASF',note:'ILS CAT III'}],
   fr:{ATIS:'121.805',TWR:'118.350',GND:'121.800',APP:'120.850'},
-  circ:'IFR. Alps to W/N — careful terrain awareness.',info:'Alpine gateway. Good for mountain approaches in IFR.'},
- {icao:'LIRF',name:'Roma Fiumicino',city:'Rome',kind:'hub',reg:'IT',lat:41.8003,lon:12.2389,elev:13,
-  rwy:[{id:'16L/34R',len:3900,wid:60,sfc:'ASPH',note:'ILS'},{id:'16R/34L',len:3900,wid:60,sfc:'ASPH',note:'ILS CAT III'},{id:'07/25',len:3300,wid:45,sfc:'ASPH',note:'ILS 25'}],
+  circ:'IFR. Alpi a ovest e a nord: attenzione al terreno.\',info:\'Porta delle Alpi. Ideale per avvicinamenti in montagna in IFR.'},
+ {icao:'LIRF',name:'Roma Fiumicino',city:'Roma',kind:'hub',reg:'IT',lat:41.8003,lon:12.2389,elev:13,
+  rwy:[{id:'16L/34R',len:3900,wid:60,sfc:'ASF',note:'ILS'},{id:'16R/34L',len:3900,wid:60,sfc:'ASF',note:'ILS CAT III'},{id:'07/25',len:3300,wid:45,sfc:'ASF',note:'ILS 25'}],
   fr:{ATIS:'121.850',TWR:'118.700',GND:'121.700',APP:'119.900',DEL:'121.900'},
-  circ:'IFR. Heavy traffic.',info:'Leonardo da Vinci — main Italian hub (ITA).'},
- {icao:'EGLL',name:'London Heathrow',city:'London',kind:'hub',reg:'EU',lat:51.4700,lon:-0.4543,elev:83,
-  rwy:[{id:'09L/27R',len:3902,wid:50,sfc:'ASPH',note:''},{id:'09R/27L',len:3660,wid:50,sfc:'ASPH',note:''}],
+  circ:'IFR. Traffico intenso.\',info:\'Leonardo da Vinci, principale hub italiano.'},
+ {icao:'EGLL',name:'Londra Heathrow',city:'Londra',kind:'hub',reg:'EU',lat:51.4700,lon:-0.4543,elev:83,
+  rwy:[{id:'09L/27R',len:3902,wid:50,sfc:'ASF',note:''},{id:'09R/27L',len:3660,wid:50,sfc:'ASF',note:''}],
   fr:{ATIS:'128.075',TWR:'118.500',GND:'121.900',APP:'119.725',DEL:'121.975'},
-  circ:'IFR only.',info:'World-class hub for virtual airline ops.'},
- {icao:'LSZH',name:'Zürich',city:'Zürich',kind:'hub',reg:'EU',lat:47.4647,lon:8.5492,elev:1416,
-  rwy:[{id:'16/34',len:3700,wid:60,sfc:'ASPH',note:''},{id:'14/32',len:3300,wid:60,sfc:'ASPH',note:''},{id:'10/28',len:2500,wid:60,sfc:'ASPH',note:''}],
+  circ:'Solo IFR.\',info:\'Hub di livello mondiale, ideale per le compagnie virtuali.'},
+ {icao:'LSZH',name:'Zurigo',city:'Zurigo',kind:'hub',reg:'EU',lat:47.4647,lon:8.5492,elev:1416,
+  rwy:[{id:'16/34',len:3700,wid:60,sfc:'ASF',note:''},{id:'14/32',len:3300,wid:60,sfc:'ASF',note:''},{id:'10/28',len:2500,wid:60,sfc:'ASF',note:''}],
   fr:{ATIS:'128.525',TWR:'118.100',GND:'121.900',APP:'124.700'},
-  circ:'IFR; strict runway-concept by time of day.',info:'Popular Swiss hub; north of the Alps.'},
- {icao:'EDDF',name:'Frankfurt am Main',city:'Frankfurt',kind:'hub',reg:'EU',lat:50.0333,lon:8.5706,elev:364,
-  rwy:[{id:'07C/25C',len:4000,wid:60,sfc:'ASPH',note:''},{id:'07R/25L',len:2800,wid:45,sfc:'ASPH',note:''},{id:'18',len:4000,wid:60,sfc:'ASPH',note:'Take-off only'}],
+  circ:'IFR; uso delle piste regolato per fascia oraria.\',info:\'Hub svizzero molto popolare, a nord delle Alpi.'},
+ {icao:'EDDF',name:'Francoforte sul Meno',city:'Francoforte',kind:'hub',reg:'EU',lat:50.0333,lon:8.5706,elev:364,
+  rwy:[{id:'07C/25C',len:4000,wid:60,sfc:'ASF',note:''},{id:'07R/25L',len:2800,wid:45,sfc:'ASF',note:''},{id:'18',len:4000,wid:60,sfc:'ASF',note:'Solo decollo'}],
   fr:{ATIS:'118.025',TWR:'119.900',GND:'121.700',APP:'120.150'},
-  circ:'IFR only.',info:'Major European hub; complex taxi network.'}
+  circ:'Solo IFR.\',info:\'Grande hub europeo con una rete di rullaggio complessa.'}
 ];
 const KIND_COL = {hub:'#4db8ff', airport:'#3dff8f', aeroclub:'#ffb300'};
 
@@ -804,7 +804,7 @@ function toggle(i){
 }
 $('#acSel').onchange = e=>{acKey=e.target.value;store.set('ac',acKey);phIdx=0;store.set('ph',0);renderCk();};
 $('#rsPhase').onclick = ()=>{ (checks[acKey] ||= {})[PHASES[phIdx][0]]=[]; persistChecks(); renderCk(); };
-$('#rsAll').onclick = ()=>{ if(confirm('Reset every phase of this checklist?')){ checks[acKey]={}; persistChecks(); phIdx=0; renderCk(); } };
+$('#rsAll').onclick = ()=>{ if(confirm('Azzerare tutte le fasi di questa checklist?')){ checks[acKey]={}; persistChecks(); phIdx=0; renderCk(); } };
 $('#prevPh').onclick = ()=>{ phIdx=Math.max(0,phIdx-1); store.set('ph',phIdx); renderCk(); };
 $('#nextPh').onclick = ()=>{ phIdx=Math.min(PHASES.length-1,phIdx+1); store.set('ph',phIdx); renderCk(); };
 
@@ -819,7 +819,7 @@ $$('[data-l]').forEach(t=>t.onclick=()=>switchLeft(t.dataset.l));
 
 /* ===================== AIRPORT UI ===================== */
 let filter = 'ALL', sel = store.get('sel','LIML');
-const FILTERS = [['ALL','ALL'],['LOM','LOMBARDY'],['aeroclub','AERO CLUBS'],['hub','AIRPORTS / HUBS']];
+const FILTERS = [['ALL','TUTTI'],['LOM','LOMBARDIA'],['aeroclub','AEROCLUB'],['hub','AEROPORTI / HUB']];
 const keyOf = a => a.icao==='—' ? a.name : a.icao;
 const getAp = k => AIRPORTS.find(a=>keyOf(a)===k) || AIRPORTS[0];
 const freqOv = store.get('freq',{});
@@ -839,32 +839,32 @@ function renderList(){
     <div class="ap ${keyOf(a)===sel?'sel':''}" data-k="${esc(keyOf(a))}">
       <div class="flex items-baseline gap-3"><span class="led accent text-lg w-14">${a.icao}</span>
       <span class="flex-1 truncate">${esc(a.name)}</span>
-      <span class="text-[.65rem] disp" style="color:${KIND_COL[a.kind]}">${a.kind==='aeroclub'?'AERO CLUB':'AIRPORT'}</span></div>
-      <div class="text-xs" style="color:var(--mute)">${esc(a.city)} · ${a.elev} ft</div></div>`).join('') || '<div class="p-4 text-sm" style="color:var(--mute)">No match.</div>';
+      <span class="text-[.65rem] disp" style="color:${KIND_COL[a.kind]}">${a.kind==='aeroclub'?'AEROCLUB':'AEROPORTO'}</span></div>
+      <div class="text-xs" style="color:var(--mute)">${esc(a.city)} · ${a.elev} ft</div></div>`).join('') || '<div class="p-4 text-sm" style="color:var(--mute)">Nessun risultato.</div>';
   $$('#apList .ap').forEach(el=>el.onclick=()=>selectAirport(el.dataset.k,true));
 }
 const fr = (a,k)=> (freqOv[keyOf(a)]||{})[k] || a.fr[k];
 function renderDetail(){
   const a = getAp(sel);
-  const fb = Object.keys(a.fr).map(k=>`<div class="freq" data-f="${k}" title="Click to edit"><small>${k}</small><b>${esc(fr(a,k))}</b></div>`).join('');
+  const fb = Object.keys(a.fr).map(k=>`<div class="freq" data-f="${k}" title="Clicca per modificare"><small>${k}</small><b>${esc(fr(a,k))}</b></div>`).join('');
   $('#apDetail').innerHTML = `
     <div class="flex items-start gap-3 mb-3">
       <div class="flex-1"><div class="led accent text-3xl leading-none">${a.icao}</div>
       <div class="text-lg">${esc(a.name)}</div><div class="text-xs" style="color:var(--mute)">${esc(a.city)} · ${a.lat.toFixed(4)}°N ${a.lon.toFixed(4)}°E</div></div>
-      <div class="text-right"><div class="text-[.65rem] disp" style="color:var(--mute)">ELEVATION</div><div class="led amber text-2xl">${a.elev}<span class="text-sm"> ft</span></div></div>
+      <div class="text-right"><div class="text-[.65rem] disp" style="color:var(--mute)">ELEVAZIONE</div><div class="led amber text-2xl">${a.elev}<span class="text-sm"> ft</span></div></div>
     </div>
-    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">FREQUENCIES (MHz) — click to edit</div>
+    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">FREQUENZE (MHz) — clicca per modificare</div>
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">${fb}</div>
-    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">RUNWAYS</div>
-    <table class="rw mb-4"><thead><tr><th>RWY</th><th>LENGTH</th><th>WIDTH</th><th>SFC</th><th>NOTES</th></tr></thead><tbody>
+    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">PISTE</div>
+    <table class="rw mb-4"><thead><tr><th>PISTA</th><th>LUNGHEZZA</th><th>LARGHEZZA</th><th>FONDO</th><th>NOTE</th></tr></thead><tbody>
       ${a.rwy.map(r=>`<tr><td class="accent">${r.id}</td><td>${r.len} m<br><span style="color:var(--mute)">${Math.round(r.len*3.281)} ft</span></td><td>${r.wid} m</td><td>${r.sfc}</td><td style="font-family:Inter;color:var(--mute)">${esc(r.note)}</td></tr>`).join('')}</tbody></table>
-    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">TRAFFIC PATTERN / PROCEDURES</div>
+    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">CIRCUITO DI TRAFFICO / PROCEDURE</div>
     <p class="mb-3 text-sm">${esc(a.circ)}</p>
-    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">BRIEFING NOTES</div>
+    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">NOTE DI BRIEFING</div>
     <p class="text-sm mb-3">${esc(a.info)}</p>
-    <div class="flex gap-2 flex-wrap"><button class="btn" id="goMap">SHOW ON MAP</button><button class="btn" id="goWx">FETCH METAR</button><button class="btn" id="goCh">CHARTS</button></div>`;
+    <div class="flex gap-2 flex-wrap"><button class="btn" id="goMap">MOSTRA SULLA MAPPA</button><button class="btn" id="goWx">SCARICA METAR</button><button class="btn" id="goCh">CARTE</button></div>`;
   $$('#apDetail .freq').forEach(f=>f.onclick=()=>{
-    const k=f.dataset.f, v=prompt(`${a.icao} ${k} frequency (MHz):`, fr(a,k));
+    const k=f.dataset.f, v=prompt(`${a.icao} ${k} frequenza (MHz):`, fr(a,k));
     if(v){ (freqOv[keyOf(a)] ||= {})[k]=v.trim(); store.set('freq',freqOv); renderDetail(); }
   });
   $('#goMap').onclick = ()=>focusAirport(a,15);
@@ -886,8 +886,8 @@ function initMap(){
   const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · © CARTO',subdomains:'abcd',maxZoom:19});
   const sat  = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19});
   const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© OpenTopoMap (CC-BY-SA)',subdomains:'abc',maxZoom:17});
-  const base = {'Dark (CARTO)':dark,'Satellite (Esri)':sat,'Topography':topo};
-  (base[store.get('base','Dark (CARTO)')]||dark).addTo(map);
+  const base = {'Scura (CARTO)':dark,'Satellite (Esri)':sat,'Topografica':topo};
+  (base[store.get('base','Scura (CARTO)')]||dark).addTo(map);
   L.control.layers(base,null,{position:'topright'}).addTo(map);
   map.on('baselayerchange',e=>store.set('base',e.name));
   L.control.scale({imperial:true,metric:true,position:'bottomright'}).addTo(map);
@@ -961,7 +961,7 @@ async function fetchText(url, headers){
 }
 async function loadWx(){
   const a = getAp(sel); const icao = a.icao==='—' ? 'LIME' : a.icao; // field without ICAO → nearest: Bergamo
-  const st = $('#wxStatus'); if(st) st.innerHTML = '<span class="amber">⟳ Contacting weather servers…</span>';
+  const st = $('#wxStatus'); if(st) st.innerHTML = '<span class="amber">⟳ Collegamento ai server meteo…</span>';
   const key = store.get('cwkey','');
   try{
     let metar, taf, src;
@@ -971,21 +971,21 @@ async function loadWx(){
       const t = await fetchText(`https://api.checkwx.com/taf/${icao}`,h).catch(()=>({text:'{}'}));
       const jm = JSON.parse(m.text), jt = JSON.parse(t.text);
       metar = (jm.data||[])[0]; taf = (jt.data||[])[0]||''; src='CheckWX';
-      if(!metar) throw new Error('No CheckWX data');
+      if(!metar) throw new Error('Nessun dato CheckWX');
     } else {
       const m = await fetchText(`${AWC}/metar?ids=${icao}&format=raw&hours=2`);
       const t = await fetchText(`${AWC}/taf?ids=${icao}&format=raw`).catch(()=>({text:''}));
       metar = m.text.split('\n')[0]; taf = t.text; src='AviationWeather.gov ('+m.via+')';
-      if(!metar || /^</.test(metar)) throw new Error('Empty response');
+      if(!metar || /^</.test(metar)) throw new Error('Risposta vuota');
     }
     wxState = {icao,metar,taf,src,ts:new Date(),demo:false};
     store.set('cache.'+icao,{metar,taf,ts:Date.now(),src});
   }catch(err){
     const c = store.get('cache.'+icao,null);
-    if(c) wxState = {icao,metar:c.metar,taf:c.taf,src:c.src+' · CACHED '+new Date(c.ts).toUTCString().slice(17,22)+'Z',ts:new Date(c.ts),demo:false,cached:true,err:err.message};
+    if(c) wxState = {icao,metar:c.metar,taf:c.taf,src:c.src+' · IN CACHE '+new Date(c.ts).toUTCString().slice(17,22)+'Z',ts:new Date(c.ts),demo:false,cached:true,err:err.message};
     else {
       const d = new Date(), dd=String(d.getUTCDate()).padStart(2,'0'), hh=String(d.getUTCHours()).padStart(2,'0');
-      wxState = {icao,metar:`${icao} ${dd}${hh}20Z 36006KT 9999 FEW040 BKN080 12/07 Q1018 NOSIG`,taf:`TAF ${icao} ${dd}${hh}00Z ${dd}${hh}/${String((d.getUTCDate())%28+1).padStart(2,'0')}${hh} 35005KT 9999 SCT040 BECMG 1215/1217 VRB03KT`,src:'OFFLINE DEMO DATA',ts:d,demo:true,err:err.message};
+      wxState = {icao,metar:`${icao} ${dd}${hh}20Z 36006KT 9999 FEW040 BKN080 12/07 Q1018 NOSIG`,taf:`TAF ${icao} ${dd}${hh}00Z ${dd}${hh}/${String((d.getUTCDate())%28+1).padStart(2,'0')}${hh} 35005KT 9999 SCT040 BECMG 1215/1217 VRB03KT`,src:'DATI DEMO OFFLINE',ts:d,demo:true,err:err.message};
     }
   }
   wxView(wxState);
@@ -996,7 +996,7 @@ function decodeMetar(raw){
   for(const x of t){
     let m;
     if(/^(METAR|SPECI|TAF)$/.test(x)) continue;
-    if((m=x.match(/^(\d{2})(\d{2})(\d{2})Z$/))) o.time=`day ${m[1]} · ${m[2]}:${m[3]}Z`;
+    if((m=x.match(/^(\d{2})(\d{2})(\d{2})Z$/))) o.time=`giorno ${m[1]} · ${m[2]}:${m[3]}Z`;
     else if((m=x.match(/^(\d{3}|VRB)(\d{2,3})(G(\d{2,3}))?(KT|MPS)$/))){ const f=m[5]==='MPS'?2:1; o.wdir=m[1]==='VRB'?null:+m[1]; o.wvrb=m[1]==='VRB'; o.wspd=Math.round(m[2]*f); o.wgst=m[4]?Math.round(m[4]*f):null; }
     else if(x==='CAVOK'){ vis=9999; o.cavok=true; }
     else if(/^\d{4}$/.test(x) && vis==null) vis=+x;
@@ -1018,26 +1018,26 @@ function wxView(s){
   const el = $('#R-wx'), a = getAp(sel);
   const hdr = `<div class="flex items-center gap-2 flex-wrap mb-3">
       <span class="led accent text-xl">${a.icao==='—'?'LIME*':a.icao}</span>
-      <button class="btn" id="wxGo">⟳ FETCH LIVE</button>
-      <label class="chip ${store.get('autowx',false)?'on':''}" id="wxAuto"><input type="checkbox" ${store.get('autowx',false)?'checked':''} style="display:none"> AUTO ON SELECT</label>
-      <input type="password" id="cwk" placeholder="CheckWX API key (optional)" value="${esc(store.get('cwkey',''))}" style="max-width:15rem">
+      <button class="btn" id="wxGo">⟳ SCARICA DAL VIVO</button>
+      <label class="chip ${store.get('autowx',false)?'on':''}" id="wxAuto"><input type="checkbox" ${store.get('autowx',false)?'checked':''} style="display:none"> AUTO ALLA SELEZIONE</label>
+      <input type="password" id="cwk" placeholder="Chiave API CheckWX (facoltativa)" value="${esc(store.get('cwkey',''))}" style="max-width:15rem">
     </div>`;
-  let body = '<div id="wxStatus" class="text-sm mb-2" style="color:var(--mute)">Press “FETCH LIVE” to download the latest METAR &amp; TAF.'+(a.icao==='—'?' (Valbrembo has no ICAO — nearest report: LIME Bergamo)':'')+'</div>';
+  let body = '<div id="wxStatus" class="text-sm mb-2" style="color:var(--mute)">Premi “SCARICA DAL VIVO” per ottenere gli ultimi METAR e TAF.'+(a.icao==='—'?' (Valbrembo non ha codice ICAO — report più vicino: LIME Bergamo)':'')+'</div>';
   if(s){
     const d = decodeMetar(s.metar);
-    const wind = d.wspd==null?'—': d.wspd===0?'CALM':`${d.wvrb?'VRB':String(d.wdir).padStart(3,'0')+'°'} / ${d.wspd} kt${d.wgst?' G'+d.wgst:''}`;
+    const wind = d.wspd==null?'—': d.wspd===0?'CALMO':`${d.wvrb?'VRB':String(d.wdir).padStart(3,'0')+'°'} / ${d.wspd} kt${d.wgst?' G'+d.wgst:''}`;
     const tile=(t,v,sub='')=>`<div class="freq" style="cursor:default"><small>${t}</small><b>${v}</b>${sub?`<div class="text-xs" style="color:var(--mute)">${sub}</div>`:''}</div>`;
-    body = `<div id="wxStatus" class="text-xs mb-3" style="color:${s.demo?'var(--amber)':s.cached?'var(--amber)':'var(--mute)'}">${s.demo?'⚠ No connection — showing DEMO data. ':''}${s.cached?'⚠ Offline — cached report. ':''}Source: ${esc(s.src)} · ${s.ts.toUTCString().slice(17,25)}Z ${s.err?'· '+esc(s.err):''}</div>
+    body = `<div id="wxStatus" class="text-xs mb-3" style="color:${s.demo?'var(--amber)':s.cached?'var(--amber)':'var(--mute)'}">${s.demo?'⚠ Nessuna connessione — dati DEMO. ':''}${s.cached?'⚠ Offline — report in cache. ':''}Fonte: ${esc(s.src)} · ${s.ts.toUTCString().slice(17,25)}Z ${s.err?'· '+esc(s.err):''}</div>
       <div class="flex items-center gap-3 mb-2"><span class="cat ${d.cat}">${d.cat}</span><span class="text-xs" style="color:var(--mute)">${esc(d.time||'')}</span></div>
       <pre class="led amber p-3 rounded mb-3 whitespace-pre-wrap" style="background:#050606;border:1px solid #2c3235;font-size:1rem;margin:0 0 .75rem">${esc(s.metar)}</pre>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
-        ${tile('WIND',wind)}${tile('VISIBILITY',d.vis==null?'—':d.vis>=9999?'≥10 km':(d.vis/1000).toFixed(1)+' km')}
-        ${tile('TEMP / DEW',d.temp==null?'—':`${d.temp}° / ${d.dew??'—'}°C`)}${tile('QNH',d.qnh?d.qnh+' hPa':'—',d.qnh?(d.qnh*0.02953).toFixed(2)+' inHg':'')}
-        ${tile('CLOUDS',d.clouds.join('<br>')||'—')}${tile('CEILING',d.ceil?d.ceil+' ft':'NONE')}${tile('WEATHER',d.wx.join(' ')||'NIL')}${tile('DEW SPREAD',d.temp!=null&&d.dew!=null?(d.temp-d.dew)+'°C':'—')}
+        ${tile('VENTO',wind)}${tile('VISIBILITÀ',d.vis==null?'—':d.vis>=9999?'≥10 km':(d.vis/1000).toFixed(1)+' km')}
+        ${tile('TEMP / RUGIADA',d.temp==null?'—':`${d.temp}° / ${d.dew??'—'}°C`)}${tile('QNH',d.qnh?d.qnh+' hPa':'—',d.qnh?(d.qnh*0.02953).toFixed(2)+' inHg':'')}
+        ${tile('NUBI',d.clouds.join('<br>')||'—')}${tile('BASE NUBI',d.ceil?d.ceil+' ft':'NESSUNA')}${tile('FENOMENI',d.wx.join(' ')||'NESSUNO')}${tile('SPREAD',d.temp!=null&&d.dew!=null?(d.temp-d.dew)+'°C':'—')}
       </div>
       <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">TAF</div>
-      <pre class="led p-3 rounded whitespace-pre-wrap" style="background:#050606;border:1px solid #2c3235;color:var(--accent);margin:0 0 1rem">${esc(s.taf||'No TAF available for this station.')}</pre>
-      <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">RUNWAY WIND COMPONENTS</div>
+      <pre class="led p-3 rounded whitespace-pre-wrap" style="background:#050606;border:1px solid #2c3235;color:var(--accent);margin:0 0 1rem">${esc(s.taf||'Nessun TAF disponibile per questa stazione.')}</pre>
+      <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">COMPONENTI DEL VENTO PER PISTA</div>
       ${windComp(a,d)}`;
   }
   el.innerHTML = hdr + body;
@@ -1046,7 +1046,7 @@ function wxView(s){
   $('#cwk').onchange = e=>{ store.set('cwkey',e.target.value.trim()); };
 }
 function windComp(a,d){
-  if(d.wspd==null) return '<div class="text-sm" style="color:var(--mute)">No wind data.</div>';
+  if(d.wspd==null) return '<div class="text-sm" style="color:var(--mute)">Nessun dato di vento.</div>';
   const rows=[]; a.rwy.forEach(r=>{
     r.id.split('/').forEach(end=>{
       const m = end.match(/^(\d{2})/); if(!m) return;
@@ -1055,11 +1055,11 @@ function windComp(a,d){
       rows.push([end, Math.round(spd*Math.cos(ang)), Math.round(spd*Math.sin(ang))]);
     });
   });
-  if(!rows.length) return '<div class="text-sm" style="color:var(--mute)">Not applicable (water runway).</div>';
+  if(!rows.length) return '<div class="text-sm" style="color:var(--mute)">Non applicabile (pista su acqua).</div>';
   const best = rows.filter(r=>typeof r[1]==='number').sort((x,y)=>y[1]-x[1])[0];
-  return `<table class="rw"><thead><tr><th>RWY</th><th>HEAD / TAIL</th><th>CROSSWIND</th></tr></thead><tbody>${rows.map(r=>{
+  return `<table class="rw"><thead><tr><th>PISTA</th><th>PRORA / CODA</th><th>LATERALE</th></tr></thead><tbody>${rows.map(r=>{
     const h=r[1], xw=r[2];
-    return `<tr><td class="accent">${r[0]}${best&&best[0]===r[0]?' ★':''}</td><td style="color:${typeof h==='number'&&h<0?'var(--red)':'var(--accent)'}">${typeof h==='number'?(h>=0?h+' kt HEAD':(-h)+' kt TAIL'):'—'}</td><td>${typeof xw==='number'?Math.abs(xw)+' kt '+(xw>0?'from R':'from L'):'—'}</td></tr>`}).join('')}</tbody></table><div class="text-xs mt-1" style="color:var(--mute)">★ = best runway for the reported wind (gust used when present). Wind reported relative to true north; runway headings approximated from designators.</div>`;
+    return `<tr><td class="accent">${r[0]}${best&&best[0]===r[0]?' ★':''}</td><td style="color:${typeof h==='number'&&h<0?'var(--red)':'var(--accent)'}">${typeof h==='number'?(h>=0?h+' kt PRORA':(-h)+' kt CODA'):'—'}</td><td>${typeof xw==='number'?Math.abs(xw)+' kt '+(xw>0?'da destra':'da sinistra'):'—'}</td></tr>`}).join('')}</tbody></table><div class="text-xs mt-1" style="color:var(--mute)">★ = pista migliore per il vento riportato (si usa la raffica, se presente). Il vento è riferito al nord vero; le prue pista sono approssimate dal numero della pista.</div>`;
 }
 
 /* ===================== CHARTS & LINKS ===================== */
@@ -1067,46 +1067,46 @@ function renderCharts(){
   const a = getAp(sel), ic = a.icao==='—'?'LIME':a.icao, q = encodeURIComponent;
   const LK = (t,sub,u)=>`<a class="lnk" href="${u}" target="_blank" rel="noopener"><div class="accent">${t} ↗</div><div class="text-xs" style="color:var(--mute)">${sub}</div></a>`;
   $('#R-ch').innerHTML = `
-    <div class="text-[.65rem] disp mb-2" style="color:var(--mute)">OFFICIAL &amp; REFERENCE CHARTS — ${a.icao} ${esc(a.name)}</div>
+    <div class="text-[.65rem] disp mb-2" style="color:var(--mute)">CARTE UFFICIALI E DI RIFERIMENTO — ${a.icao} ${esc(a.name)}</div>
     <div class="grid md:grid-cols-2 gap-2 mb-4">
-      ${LK('AIP Italia (ENAV)','Official AIP — charts, AD 2 sections for '+ic,'https://www.google.com/search?q='+q('AIP Italia ENAV '+ic+' AD 2 charts'))}
-      ${LK('ENAV AIS — Online AIP','Italian Aeronautical Information Service','https://www.enav.it')}
-      ${LK('SkyVector','VFR sectional / IFR enroute charts','https://skyvector.com/airport/'+ic)}
-      ${LK('OurAirports','Runways, frequencies, navaids (open data)','https://ourairports.com/airports/'+ic+'/')}
-      ${LK('AirNav / Windy.com','Live wind & weather','https://www.windy.com/'+a.lat+'/'+a.lon+'?'+a.lat+','+a.lon+',10')}
-      ${LK('VFR Italia / VFR charts','Search VFR approach charts & VRPs','https://www.google.com/search?q='+q('VFR chart '+ic+' '+a.name+' VRP'))}
-      ${LK('Navigraph Charts','Pro charts (login required)','https://charts.navigraph.com/')}
-      ${LK('Aviation Weather (AWC)','METAR / TAF / SIGMET graphics','https://aviationweather.gov/data/metar/?ids='+ic)}
+      ${LK('AIP Italia (ENAV)','AIP ufficiale — carte e sezioni AD 2 per '+ic,'https://www.google.com/search?q='+q('AIP Italia ENAV '+ic+' AD 2 charts'))}
+      ${LK('ENAV AIS — AIP online','Servizio informazioni aeronautiche italiano','https://www.enav.it')}
+      ${LK('SkyVector','Carte VFR / IFR di rotta','https://skyvector.com/airport/'+ic)}
+      ${LK('OurAirports','Piste, frequenze, radioaiuti (dati aperti)','https://ourairports.com/airports/'+ic+'/')}
+      ${LK('Windy.com','Vento e meteo in tempo reale','https://www.windy.com/'+a.lat+'/'+a.lon+'?'+a.lat+','+a.lon+',10')}
+      ${LK('Carte VFR Italia','Cerca carte VFR e punti di riporto (VRP)','https://www.google.com/search?q='+q('VFR chart '+ic+' '+a.name+' VRP'))}
+      ${LK('Navigraph Charts','Carte professionali (serve login)','https://charts.navigraph.com/')}
+      ${LK('Aviation Weather (AWC)','Grafici METAR / TAF / SIGMET','https://aviationweather.gov/data/metar/?ids='+ic)}
     </div>
-    <div class="text-xs" style="color:var(--mute)">Links open in a new tab. Many publishers block embedding (X-Frame-Options), so charts are opened externally. Tip: put the chart tab on a second monitor beside your simulator.</div>`;
+    <div class="text-xs" style="color:var(--mute)">I link si aprono in una nuova scheda: molti siti bloccano l'incorporamento, quindi le carte si aprono all'esterno. Suggerimento: tieni la scheda delle carte su un secondo monitor accanto al simulatore.</div>`;
 }
 
 /* ===================== DATA TOOLS (parser / scrape helper) ===================== */
 function renderTools(){
   $('#R-tl').innerHTML = `
-    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">PASTE-AND-DECODE METAR PARSER</div>
-    <textarea id="rawIn" rows="3" class="led" placeholder="Paste any METAR, e.g. LIMC 181350Z 24008KT 9999 FEW035 BKN070 09/04 Q1021 NOSIG"></textarea>
-    <div class="flex gap-2 my-2"><button class="btn" id="dec">DECODE</button><button class="btn" id="fillLive">USE CURRENT METAR</button></div>
+    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">DECODIFICATORE METAR (INCOLLA E DECODIFICA)</div>
+    <textarea id="rawIn" rows="3" class="led" placeholder="Incolla un METAR, es. LIMC 181350Z 24008KT 9999 FEW035 BKN070 09/04 Q1021 NOSIG"></textarea>
+    <div class="flex gap-2 my-2"><button class="btn" id="dec">DECODIFICA</button><button class="btn" id="fillLive">USA IL METAR ATTUALE</button></div>
     <div id="decOut" class="mb-5"></div>
 
-    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">AVIATION DATA FETCH HELPER</div>
+    <div class="text-[.65rem] disp mb-1" style="color:var(--mute)">SCARICAMENTO DATI AERONAUTICI</div>
     <div class="grid gap-2">
-      <input type="text" id="ghIds" placeholder="ICAO list (comma-separated), e.g. LIML,LIMC,LIME,LIPO,LIPX" value="LIML,LIMC,LIME,LIPO,LIPX">
-      <div class="flex gap-2 flex-wrap"><button class="btn" id="bulk">FETCH MULTIPLE METARs</button><button class="btn" id="csv">COPY RESULT</button></div>
+      <input type="text" id="ghIds" placeholder="Elenco ICAO separati da virgola, es. LIML,LIMC,LIME,LIPO,LIPX" value="LIML,LIMC,LIME,LIPO,LIPX">
+      <div class="flex gap-2 flex-wrap"><button class="btn" id="bulk">SCARICA PIÙ METAR</button><button class="btn" id="csv">COPIA RISULTATO</button></div>
       <pre id="bulkOut" class="led p-3 rounded whitespace-pre-wrap" style="background:#050606;border:1px solid #2c3235;color:var(--amber);min-height:3rem;margin:0"></pre>
     </div>
-    <div class="text-xs mt-3" style="color:var(--mute)">Data is pulled client-side from aviationweather.gov (public API). Browsers may block direct calls (CORS) — the app falls back to public CORS relays automatically, and to your CheckWX key if set in the METAR tab.</div>`;
+    <div class="text-xs mt-3" style="color:var(--mute)">I dati arrivano direttamente dal browser da aviationweather.gov (API pubblica). Il browser può bloccare le chiamate dirette (CORS): l'app prova in automatico dei relay pubblici, oppure usa la tua chiave CheckWX se impostata nella scheda METAR.</div>`;
   const out = $('#decOut');
   $('#dec').onclick = ()=>{
     const raw = $('#rawIn').value.trim(); if(!raw) return;
     const d = decodeMetar(raw);
-    out.innerHTML = `<span class="cat ${d.cat}">${d.cat}</span> <span class="led">WIND ${d.wspd==null?'—':(d.wvrb?'VRB':d.wdir+'°')+'/'+d.wspd+'kt'+(d.wgst?'G'+d.wgst:'')} · VIS ${d.vis==null?'—':d.vis>=9999?'≥10km':d.vis+'m'} · CEIL ${d.ceil||'NONE'} · T/Td ${d.temp??'—'}/${d.dew??'—'} · QNH ${d.qnh??'—'} · ${esc(d.clouds.join(', '))}</span>`;
+    out.innerHTML = `<span class="cat ${d.cat}">${d.cat}</span> <span class="led">VENTO ${d.wspd==null?'—':(d.wvrb?'VRB':d.wdir+'°')+'/'+d.wspd+'kt'+(d.wgst?'G'+d.wgst:'')} · VIS ${d.vis==null?'—':d.vis>=9999?'≥10km':d.vis+'m'} · BASE ${d.ceil||'NESSUNA'} · T/Td ${d.temp??'—'}/${d.dew??'—'} · QNH ${d.qnh??'—'} · ${esc(d.clouds.join(', '))}</span>`;
   };
   $('#fillLive').onclick = ()=>{ if(wxState){ $('#rawIn').value = wxState.metar; $('#dec').click(); } };
   $('#bulk').onclick = async ()=>{
-    const ids = $('#ghIds').value.replace(/\s/g,'').toUpperCase(); const o=$('#bulkOut'); o.textContent='Fetching…';
-    try{ const r = await fetchText(`${AWC}/metar?ids=${ids}&format=raw`); o.textContent = r.text || 'No data.'; }
-    catch(e){ o.textContent = 'Failed: '+e.message+' (offline or blocked).'; }
+    const ids = $('#ghIds').value.replace(/\s/g,'').toUpperCase(); const o=$('#bulkOut'); o.textContent='Download in corso…';
+    try{ const r = await fetchText(`${AWC}/metar?ids=${ids}&format=raw`); o.textContent = r.text || 'Nessun dato.'; }
+    catch(e){ o.textContent = 'Errore: '+e.message+' (offline o bloccato).'; }
   };
   $('#csv').onclick = ()=>navigator.clipboard?.writeText($('#bulkOut').textContent);
 }
@@ -1114,7 +1114,7 @@ function renderTools(){
 /* ===================== WINDY RADAR ===================== */
 function renderRadar(){
   const a = getAp(sel);
-  $('#R-rd').innerHTML = `<div class="text-xs mb-2" style="color:var(--mute)">Live wind / clouds / radar layer centred on ${esc(a.icao==='—'?a.name:a.icao)} (Windy.com embed — requires internet)</div>
+  $('#R-rd').innerHTML = `<div class="text-xs mb-2" style="color:var(--mute)">Livello vento / nubi / radar in tempo reale centrato su ${esc(a.icao==='—'?a.name:a.icao)} (Windy.com — serve internet)</div>
   <iframe title="Windy" style="width:100%;height:min(46vh,24rem);border:1px solid var(--line);border-radius:.5rem" loading="lazy"
    src="https://embed.windy.com/embed2.html?lat=${a.lat}&lon=${a.lon}&detailLat=${a.lat}&detailLon=${a.lon}&zoom=8&level=surface&overlay=wind&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"></iframe>`;
 }
@@ -1126,7 +1126,7 @@ switchLeft(store.get('lt','ck')); switchRight(store.get('rt','wx'));
 // radar iframe is lazy: only render when tab opened first time
 (function(){ let r=false; const old=switchRight; window.switchRight=function(w){ old(w); if(w==='rd'&&!r){r=true;renderRadar();} }; })();
 $$('[data-r]').forEach(t=>t.onclick=()=>window.switchRight(t.dataset.r));
-$('#R-rd').innerHTML='<div class="text-sm" style="color:var(--mute)">Open this tab to load the live wind/radar map.</div>';
+$('#R-rd').innerHTML='<div class="text-sm" style="color:var(--mute)">Apri questa scheda per caricare la mappa vento/radar in tempo reale.</div>';
 applyScale(scale);
 </script>
 </body>
