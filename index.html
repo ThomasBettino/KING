@@ -73,6 +73,7 @@ a.lnk:hover{border-color:var(--accent);color:var(--accent)}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#101315;color:var(--text);border:1px solid rgba(var(--accent-rgb),.5)}
 .apin{width:14px;height:14px;border-radius:50%;border:2px solid #fff3;background:var(--c);box-shadow:0 0 10px var(--c),0 0 20px var(--c)}
 .apin.sel{transform:scale(1.5);border-color:#fff}
+.osm-dark{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}
 .maplbl{background:rgba(8,9,10,.8);border:1px solid #2c3235;color:var(--accent);font-family:'Share Tech Mono',monospace;padding:0 .35rem;border-radius:.25rem}
 .maplbl:before{display:none}
 html[data-bright="dim"] body{filter:brightness(.6)}
@@ -886,7 +887,17 @@ function initMap(){
   const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · © CARTO',subdomains:'abcd',maxZoom:19});
   const sat  = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19});
   const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© OpenTopoMap (CC-BY-SA)',subdomains:'abc',maxZoom:17});
-  const base = {'Scura (CARTO)':dark,'Satellite (Esri)':sat,'Topografica':topo};
+  const osm  = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19,className:'osm-dark'});
+  const base = {'Scura (CARTO)':dark,'OpenStreetMap (scura)':osm,'Satellite (Esri)':sat,'Topografica':topo};
+  // Se un fornitore rifiuta le richieste, passa automaticamente al successivo
+  const chain=[dark,osm,sat,topo]; let errN=0, curIdx=0;
+  chain.forEach((lyr,i)=>lyr.on('tileerror',()=>{
+    if(!map.hasLayer(lyr)||i!==curIdx) return;
+    if(++errN<4) return; errN=0;
+    if(curIdx<chain.length-1){ map.removeLayer(lyr); curIdx++; chain[curIdx].addTo(map);
+      $('#cursor').textContent='Mappa non disponibile: uso '+Object.keys(base)[curIdx]; }
+  }));
+  map.on('baselayerchange',e=>{ curIdx=chain.indexOf(base[e.name]); errN=0; });
   (base[store.get('base','Scura (CARTO)')]||dark).addTo(map);
   L.control.layers(base,null,{position:'topright'}).addTo(map);
   map.on('baselayerchange',e=>store.set('base',e.name));
